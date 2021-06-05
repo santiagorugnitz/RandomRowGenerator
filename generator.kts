@@ -2,8 +2,9 @@ import java.io.File
 import kotlin.math.nextUp
 import kotlin.random.*
 
-val path = "empresas.txt"
-val separator = "\t"
+val path = "titanic_raw.txt"
+val resultPath = "results.txt"
+val separator = ","
 var count = 0
 val data = mutableListOf<ColumnData>()
 val lines = File(path).readLines()
@@ -15,12 +16,22 @@ lines.forEach {
         data[pos].onNewValue(value)
     }
 }
-for (i in 1..(count / 5)) {
-    data.forEach {
-        print(it.generateRandom() + separator)
+File(resultPath).writeText("")
+File(resultPath).printWriter().use { out ->
+    for (i in 1..(count / 5)) {
+        data.forEachIndexed { index, it ->
+            if(data.size-1==index){
+                out.print(it.generateRandom())
+            }
+            else{
+                out.print(it.generateRandom() + separator)
+            }
+        }
+        out.println()
     }
-    println()
 }
+println("${count / 5} entries generated")
+
 
 fun prepareDataList(row: String) {
     val values = row.split(separator)
